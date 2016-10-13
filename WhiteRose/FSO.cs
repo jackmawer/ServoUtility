@@ -15,7 +15,7 @@ namespace WhiteRose
 {
     public static class FSO
     {
-
+        [Obsolete]
         public static string[] fsoParmas { get; set; }
 
         public static string libVer = "WhiteRose " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -78,13 +78,14 @@ namespace WhiteRose
         }
 
         /// <summary>
-        /// Launches the FreeSO executable with the specified
+        /// Launches the FreeSO IDE executable with the specified
         /// game arguments defined in the application settings.
         /// 
         /// Defualt settings: FSO.IDE.exe must be located in same
-        /// directory and the game arguments are "800x600 w"
+        /// directory and the game arguments are "800x600 w".
+        /// 
+        /// To allow changes for these settings, use the Configure class.
         /// </summary>
-        /// <param name="args"></param>
         public static void StartFSO()
         {
             var fso = Properties.Settings.Default.Client;
@@ -107,9 +108,10 @@ namespace WhiteRose
         /// game arguments defined in the application settings.
         /// 
         /// Defualt settings: FSO.IDE.exe must be located in same
-        /// directory and the game arguments are "800x600 w"
+        /// directory and the game arguments are "800x600 w".
+        /// 
+        /// To allow changes for these settings, use the Configure class.
         /// </summary>
-        /// <param name="args"></param>
         public static void StartIDE()
         {
             var ide = Properties.Settings.Default.IDE;
