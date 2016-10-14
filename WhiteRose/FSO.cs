@@ -88,6 +88,7 @@ namespace WhiteRose
         /// </summary>
         public static void StartFSO()
         {
+            var isGUI = Properties.Settings.Default.isGUI;
             var fso = Properties.Settings.Default.Client;
             var fsoProcess = new Process();
 
@@ -99,8 +100,18 @@ namespace WhiteRose
                 fsoProcess.Start();
             }
 			else {
-				MessageBox.Show(fso + " not found.");
-			}
+
+                switch (isGUI)
+                {
+                    case false:
+                        Console.WriteLine(fso + " not found.");
+                        break;
+                    default:
+                        MessageBox.Show(fso + " not found.");
+                        break;
+                }
+
+            }
         }
 
         /// <summary>
@@ -114,6 +125,7 @@ namespace WhiteRose
         /// </summary>
         public static void StartIDE()
         {
+            var isGUI = Properties.Settings.Default.isGUI;
             var ide = Properties.Settings.Default.IDE;
             var fsoProcess = new Process();
 
@@ -126,7 +138,15 @@ namespace WhiteRose
             }
             else
             {
-                MessageBox.Show(ide + " not found.");
+                switch (isGUI)
+                {
+                    case false:
+                        Console.WriteLine(ide + " not found.");
+                        break;
+                    default:
+                        MessageBox.Show(ide + " not found.");
+                        break;
+                }
             }
         }
 

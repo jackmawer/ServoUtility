@@ -58,5 +58,16 @@ namespace WhiteRose
         {
             Properties.Settings.Default.Args = args;
         }
+
+        /// <summary>
+        /// Is this client a GUI? By defualt this is true.
+        /// If the answer is false, StartFSO and StartIDE will provide
+        /// error messages from the terminal.
+        /// </summary>
+        /// <param name="isgui"></param>
+        public static void isGUI(bool isgui)
+        {
+            Properties.Settings.Default.isGUI = isgui;
+        }
     }
 }

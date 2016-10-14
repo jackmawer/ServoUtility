@@ -11,5 +11,8 @@
     <Setting Name="Args" Type="System.String" Scope="User">
       <Value Profile="(Default)">800x600 w</Value>
     </Setting>
+    <Setting Name="isGUI" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

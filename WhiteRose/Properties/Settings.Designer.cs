@@ -58,5 +58,17 @@ namespace WhiteRose.Properties {
                 this["Args"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool isGUI {
+            get {
+                return ((bool)(this["isGUI"]));
+            }
+            set {
+                this["isGUI"] = value;
+            }
+        }
     }
 }
