@@ -90,6 +90,7 @@ namespace WhiteRose
         {
             var isGUI = Properties.Settings.Default.isGUI;
             var fso = Properties.Settings.Default.Client;
+            var notFound = fso + " not found";
             var fsoProcess = new Process();
 
 			if (File.Exists(fso))
@@ -104,10 +105,11 @@ namespace WhiteRose
                 switch (isGUI)
                 {
                     case false:
-                        Console.WriteLine(fso + " not found.");
+                        Console.WriteLine(notFound);
                         break;
+                    case true:
                     default:
-                        MessageBox.Show(fso + " not found.");
+                        MessageBox.Show(notFound);
                         break;
                 }
 
@@ -127,6 +129,7 @@ namespace WhiteRose
         {
             var isGUI = Properties.Settings.Default.isGUI;
             var ide = Properties.Settings.Default.IDE;
+            var notFound = ide + " not found";
             var fsoProcess = new Process();
 
             if (File.Exists(ide))
@@ -141,10 +144,11 @@ namespace WhiteRose
                 switch (isGUI)
                 {
                     case false:
-                        Console.WriteLine(ide + " not found.");
+                        Console.WriteLine(notFound);
                         break;
+                    case true:
                     default:
-                        MessageBox.Show(ide + " not found.");
+                        MessageBox.Show(notFound);
                         break;
                 }
             }
