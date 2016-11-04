@@ -1,28 +1,85 @@
-﻿namespace ServoUtility {
-    
-    
-    // This class allows you to handle specific events on the settings class:
-    //  The SettingChanging event is raised before a setting's value is changed.
-    //  The PropertyChanged event is raised after a setting's value is changed.
-    //  The SettingsLoaded event is raised after the setting values are loaded.
-    //  The SettingsSaving event is raised before the setting values are saved.
-    internal sealed partial class Settings {
-        
-        public Settings() {
-            // // To add event handlers for saving and changing settings, uncomment the lines below:
-            //
-            // this.SettingChanging += this.SettingChangingEventHandler;
-            //
-            // this.SettingsSaving += this.SettingsSavingEventHandler;
-            //
+﻿// This is free and unencumbered software released into the public domain.
+//
+// Anyone is free to copy, modify, publish, use, compile, sell, or
+// distribute this software, either in source code form or as a compiled
+// binary, for any purpose, commercial or non-commercial, and by any
+// means.
+//
+// In jurisdictions that recognize copyright laws, the author or authors
+// of this software dedicate any and all copyright interest in the
+// software to the public domain. We make this dedication for the benefit
+// of the public at large and to the detriment of our heirs and
+// successors. We intend this dedication to be an overt act of
+// relinquishment in perpetuity of all present and future rights to this
+// software under copyright law.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+// OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+//
+// For more information, please refer to <http://unlicense.org/>
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using ServoUtility.FSO;
+
+namespace ServoUtility
+{
+    public class Settings : IniConfig
+    {
+        private static Settings defaultInstance;
+
+        public static Settings Default
+        {
+            get
+            {
+#if DEBUG
+                if (defaultInstance == null)
+                    defaultInstance = new Settings(Path.Combine(Environment.CurrentDirectory, "ServoUtility.ini"));
+                return defaultInstance;
+#else
+                if (defaultInstance == null)
+                    defaultInstance = new GlobalSettings(Path.Combine(FSOEnvironment.UserDir, "ServoUtility.ini"));
+                return defaultInstance;
+#endif
+            }
         }
-        
-        private void SettingChangingEventHandler(object sender, System.Configuration.SettingChangingEventArgs e) {
-            // Add code to handle the SettingChangingEvent event here.
+
+        public Settings(string path) : base(path) { }
+
+        private Dictionary<string, string> _DefaultValues = new Dictionary<string, string>()
+        {
+            {"Client", "FreeSO.exe" },
+            {"IDE", "Volcanic.exe" },
+            {"Args", "800x600 w" },
+            {"isGUI", "True" },
+            {"TeamCity", "servo.freeso.org" },
+            {"BuildType", "FreeSO_TsoClient" },
+            {"Utility", "MySimulationLauncher.exe" },
+            { "ClientDirectory", "" },
+            { "UtilityUpdate", "https://dl.dropboxusercontent.com/u/42345729/" }
+        };
+
+        public override Dictionary<string, string> DefaultValues
+        {
+            get { return _DefaultValues; }
+            set { _DefaultValues = value; }
         }
-        
-        private void SettingsSavingEventHandler(object sender, System.ComponentModel.CancelEventArgs e) {
-            // Add code to handle the SettingsSaving event here.
-        }
+
+        public string Client { get; set; }
+        public string IDE { get; set; }
+        public string Args { get; set; }
+        public bool isGUI { get; set; }
+        public string TeamCity { get; set; }
+        public string BuildType { get; set; }
+        public string Utility { get; set; }
+        public string ClientDirectory { get; set; }
+        public Uri UtilityUpdate { get; set; }
+
     }
 }

@@ -30,23 +30,25 @@ using System.IO.Compression;
 using System.IO;
 using System.Diagnostics;
 
-namespace ServoUtility
+namespace ServoUtility.Update
 {
-    class ConsoleUpdate : IUpdate
+    public class ConsoleUpdate : IUpdate
     {
         WebClient client = new WebClient();
 
         private string downloadedFile { get; set; }
-        public static string newProccessInfo { get; set; }
+        string utility = Settings.Default.Utility;
+        Uri utilityUpdate = Settings.Default.UtilityUpdate;
 
-        public void InstallApp(Uri address, string compressedFile, string newProcess)
+        public void InstallApp(string compressedFile)
         {
             client.DownloadFileCompleted += new AsyncCompletedEventHandler(ExtractExit);
-            client.DownloadFileAsync(address, compressedFile);
-            newProccessInfo = newProcess;
+            client.DownloadFileAsync(utilityUpdate, compressedFile);
             downloadedFile = compressedFile;
         }
 
+        // TODO: Use ApDomains to retrieve self-updating 
+        [LoaderOptimization(LoaderOptimization.MultiDomainHost)]
         public void ExtractExit(object sender, AsyncCompletedEventArgs e)
         {
             try
@@ -63,7 +65,7 @@ namespace ServoUtility
 
                 try
                 {
-                    ProcessStartInfo newProccess = new ProcessStartInfo(newProccessInfo);
+                    ProcessStartInfo newProccess = new ProcessStartInfo(utility);
                     newProccess.UseShellExecute = true;
                     newProccess.Verb = "runas";
                     Process.Start(newProccess);

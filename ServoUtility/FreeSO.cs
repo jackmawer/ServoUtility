@@ -26,7 +26,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using Eto.Forms;
+using System.Windows.Forms;
 using Ionic.Zip;
 using System.Net;
 using System.Linq;
@@ -37,35 +37,60 @@ namespace ServoUtility
 {
     public static class FreeSO
     {
-        static string libName = "ServoUtility";
         static string checkIni = " Edit ServoUtility.ini to change the location.";
         static string fallbackUrl = "www.google.com";
-        static string curDir = Environment.CurrentDirectory;
-        public static string libVer = libName + " " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public static string libVer = "ServoUtility " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
         /// <summary>
-        /// Returns all files by their extensions within the current directory.
-        /// You only need to type in the name of the extension.
+        /// Returns all files by their <b>extension</b> within the current 
+        /// or the defined directory in ServoUtility.ini.
         /// </summary>
-        /// <param name="fileExt"></param>
-        /// <returns></returns>
-        public static FileInfo[] FileWildCard(string fileExt)
+        /// <param name="extension"></param>
+        /// <returns>Files by extension</returns>
+        public static FileInfo[] FileWildCard(string extension)
         {
-            var dir = new DirectoryInfo(curDir);
-            var files = dir.GetFiles("*." + fileExt.ToLower()).Where(p => p.Extension == "." + fileExt.ToLower()).ToArray();
-            return files;
+            var clientDir = "";
+
+            try
+            {
+                clientDir = Environment.CurrentDirectory;
+                var dir = new DirectoryInfo(clientDir);
+                var files = dir.GetFiles("*." + extension.ToLower()).Where(p => p.Extension == "." + extension.ToLower()).ToArray();
+                return files;
+            }
+            catch
+            {
+                clientDir = Settings.Default.ClientDirectory;
+                var dir = new DirectoryInfo(clientDir);
+                var files = dir.GetFiles("*." + extension.ToLower()).Where(p => p.Extension == "." + extension.ToLower()).ToArray();
+                return files;
+            }
         }
 
         /// <summary>
-        /// Returns all files by their extensions in the selected directory.
+        /// Returns all files by their <b>extension</b> in the selected
+        /// or the defined directory in ServoUtility.ini
         /// </summary>
-        /// <param name="fileExt"></param>
-        /// <returns></returns>
-        public static FileInfo[] FileWildCard(string fileExt, string fileDir)
+        /// <param name="extension"></param>
+        /// <returns>Files by extension</returns>
+        public static FileInfo[] FileWildCard(string extension, string fileDir)
         {
-            var dir = new DirectoryInfo(fileDir);
-            var files = dir.GetFiles("*." + fileExt.ToLower()).Where(p => p.Extension == "." + fileExt.ToLower()).ToArray();
-            return files;
+            var clientDir = "";
+
+            try
+            {
+                clientDir = fileDir;
+                var dir = new DirectoryInfo(clientDir);
+                var files = dir.GetFiles("*." + extension.ToLower()).Where(p => p.Extension == "." + extension.ToLower()).ToArray();
+                return files;
+            }
+            catch
+            {
+                clientDir = Settings.Default.ClientDirectory;
+                var dir = new DirectoryInfo(clientDir);
+                var files = dir.GetFiles("*." + extension.ToLower()).Where(p => p.Extension == "." + extension.ToLower()).ToArray();
+                return files;
+            }
         }
 
         /// <summary>
@@ -74,7 +99,6 @@ namespace ServoUtility
         /// </summary>
         /// <param name="url"></param>
         /// <returns>new Uri(url);</returns>
-        [Obsolete]
         public static Uri WebPage(string url)
         {
             try
@@ -113,18 +137,29 @@ namespace ServoUtility
         /// 
         /// To allow changes for these settings, use the Configure class.
         /// </summary>
-        public static void RunClient()
+        public static void LaunchClient()
         {
-            var isGUI = GlobalSettings.Default.isGUI;
-            var fso = GlobalSettings.Default.Client;
+            var isGUI = Settings.Default.isGUI;
+            var fso = Settings.Default.Client;
+            var clientDir = "";
             var notFound = fso + checkIni;
             var fsoProcess = new Process();
 
+            
             if (File.Exists(fso))
             {
-                fsoProcess.StartInfo.FileName = fso;
+                clientDir = Environment.CurrentDirectory;
+                fsoProcess.StartInfo.FileName = clientDir + fso;
                 fsoProcess.StartInfo.UseShellExecute = true;
-                fsoProcess.StartInfo.Arguments = GlobalSettings.Default.Args;
+                fsoProcess.StartInfo.Arguments = Settings.Default.Args;
+                fsoProcess.Start();
+            }
+            else if (!File.Exists(fso))
+            {
+                clientDir = Settings.Default.ClientDirectory;
+                fsoProcess.StartInfo.FileName = clientDir + fso;
+                fsoProcess.StartInfo.UseShellExecute = true;
+                fsoProcess.StartInfo.Arguments = Settings.Default.Args;
                 fsoProcess.Start();
             }
             else
@@ -153,22 +188,34 @@ namespace ServoUtility
         /// 
         /// To allow changes for these settings, use the Configure class.
         /// </summary>
-        public static void RunIDE()
+        public static void LaunchIDE()
         {
-            var isGUI = GlobalSettings.Default.isGUI;
-            var ide = GlobalSettings.Default.IDE;
+
+            var ide = Settings.Default.IDE;
             var notFound = ide + checkIni;
+            var isGUI = Settings.Default.isGUI;
+            var clientDir = "";
             var fsoProcess = new Process();
 
             if (File.Exists(ide))
             {
-                fsoProcess.StartInfo.FileName = ide;
+                clientDir = Environment.CurrentDirectory;
+                fsoProcess.StartInfo.FileName = clientDir + ide;
                 fsoProcess.StartInfo.UseShellExecute = true;
-                fsoProcess.StartInfo.Arguments = GlobalSettings.Default.Args;
+                fsoProcess.StartInfo.Arguments = Settings.Default.Args;
+                fsoProcess.Start();
+            }
+            else if (!File.Exists(ide))
+            {
+                clientDir = Settings.Default.ClientDirectory;
+                fsoProcess.StartInfo.FileName = clientDir + ide;
+                fsoProcess.StartInfo.UseShellExecute = true;
+                fsoProcess.StartInfo.Arguments = Settings.Default.Args;
                 fsoProcess.Start();
             }
             else
             {
+
                 switch (isGUI)
                 {
                     case false:
@@ -179,15 +226,16 @@ namespace ServoUtility
                         MessageBox.Show(notFound);
                         break;
                 }
+
             }
         }
 
         /// <summary>
         /// Launches a third party client or application.
         /// </summary>
-        public static void RunThirdParty(string thirdparty)
+        public static void LaunchThirdParty(string thirdparty)
         {
-            var isGUI = GlobalSettings.Default.isGUI;
+            var isGUI = Settings.Default.isGUI;
             var notFound = thirdparty + checkIni;
             var fsoProcess = new Process();
 
@@ -195,7 +243,7 @@ namespace ServoUtility
             {
                 fsoProcess.StartInfo.FileName = thirdparty;
                 fsoProcess.StartInfo.UseShellExecute = true;
-                fsoProcess.StartInfo.Arguments = GlobalSettings.Default.Args;
+                fsoProcess.StartInfo.Arguments = Settings.Default.Args;
                 fsoProcess.Start();
             }
             else
@@ -266,7 +314,7 @@ namespace ServoUtility
 
             try
             {
-                string buildFile = curDir + @"/" + file;
+                string buildFile = Environment.CurrentDirectory + @"/" + file;
                 var fileRead = new StreamReader(buildFile);
                 while ((line = fileRead.ReadLine()) != null)
                 {
@@ -284,21 +332,42 @@ namespace ServoUtility
         }
 
         /// <summary>
-        /// 
+        /// Writes the build number in the current 
+        /// or specified directory if the client isn't found.
         /// </summary>
         /// <param name="file"></param>
         public static void WriteBuild(string file)
         {
-            string buildFile = curDir + @"/" + file;
-            string localDist = DistNum();
+            var clientDir = "";
+            var buildFile = clientDir + @"/" + file;
+            var localDist = DistNum();
+            var client = Settings.Default.Client;
+            var notFound = client + checkIni;
+            var isGUI = Settings.Default.isGUI;
 
-            try
+            if (File.Exists(client))
             {
+                clientDir = Environment.CurrentDirectory;
                 File.WriteAllText(buildFile, localDist);
             }
-            catch (Exception ex)
+            else if (!File.Exists(client))
             {
-                MessageBox.Show(ex.Message);
+                clientDir = Settings.Default.ClientDirectory;
+                File.WriteAllText(buildFile, localDist);
+            }
+            else
+            {
+                switch (isGUI)
+                {
+                    case false:
+                        Console.WriteLine(notFound);
+                        break;
+                    case true:
+                    default:
+                        MessageBox.Show(notFound);
+                        break;
+                }
+
             }
         }
 

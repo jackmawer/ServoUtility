@@ -29,17 +29,17 @@ using System.ComponentModel;
 using System.IO.Compression;
 using System.IO;
 using System.Diagnostics;
-using Eto.Forms;
-using System.Linq;
+using System.Windows.Forms;
 
-namespace ServoUtility
+namespace ServoUtility.Update
 {
-    public class AppUpdate : IUpdate
+    public class UtilityUpdate : IUpdate
     {
         WebClient client = new WebClient();
 
         private string downloadedFile { get; set; }
-        public static string newProccessInfo { get; set; }
+        string utility = Settings.Default.Utility;
+        Uri utilityUpdate = Settings.Default.UtilityUpdate;
 
         /// <summary>
         /// 
@@ -47,14 +47,15 @@ namespace ServoUtility
         /// <param name="address"></param>
         /// <param name="compressedFile"></param>
         /// <param name="newProcess"></param>
-        public void InstallApp(Uri address, string compressedFile, string newProcess)
+        public void InstallApp(string compressedFile)
         {
             client.DownloadFileCompleted += new AsyncCompletedEventHandler(ExtractExit);
-            client.DownloadFileAsync(address, compressedFile);
-            newProccessInfo = newProcess;
+            client.DownloadFileAsync(utilityUpdate, compressedFile);
             downloadedFile = compressedFile;
         }
 
+        // TODO: Use ApDomains to retrieve self-updating 
+        [LoaderOptimization(LoaderOptimization.MultiDomainHost)]
         public void ExtractExit(object sender, AsyncCompletedEventArgs e)
         {
             try
@@ -64,20 +65,13 @@ namespace ServoUtility
                     foreach (ZipArchiveEntry ex in archive.Entries)
                     {
                         ex.ExtractToFile(Path.Combine(Environment.CurrentDirectory, ex.FullName), true);
-
-                        // Don't unzip files that conflict
-                        if (ex.FullName.Contains("Eto.Forms") || ex.FullName.Contains("DotNetZip")
-                            || ex.FullName.Contains("Eto.Forms") && ex.FullName.Contains("DotNetZip"))
-                        {
-                            ex.ExtractToFile(Path.Combine(Path.GetTempPath(), ex.FullName), true);
-                        }
                     }
                 }
 
                 UpdateGC.GC();
 
                 try {
-                    ProcessStartInfo newProccess = new ProcessStartInfo(newProccessInfo);
+                    ProcessStartInfo newProccess = new ProcessStartInfo(utility);
                     newProccess.UseShellExecute = true;
                     newProccess.Verb = "runas";
                     Process.Start(newProccess);

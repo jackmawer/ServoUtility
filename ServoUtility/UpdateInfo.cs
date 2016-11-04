@@ -23,7 +23,7 @@
 //
 // For more information, please refer to <http://unlicense.org/>
 
-using System;
+using ServoUtility.Update;
 
 namespace ServoUtility
 {
@@ -37,10 +37,10 @@ namespace ServoUtility
         /// <param name="processInfo">Executable</param>
         /// <param name="address">Address to zip file</param>
         /// <param name="compressedFile">Zip file</param>
-        public static void AppUpdate(string processInfo, Uri address, string compressedFile)
+        public static void AppUpdate(string compressedFile)
         {
-            var install = new AppUpdate();
-            install.InstallApp(address, compressedFile, processInfo);
+            var install = new UtilityUpdate();
+            install.InstallApp(compressedFile);
         }
 
         /// <summary>
@@ -51,10 +51,10 @@ namespace ServoUtility
         /// <param name="processInfo">Executable</param>
         /// <param name="address">Address to zip file</param>
         /// <param name="compressedFile">Zip file</param>
-        public static void ConsoleUpdate(string processInfo, Uri address, string compressedFile)
+        public static void ConsoleUpdate(string compressedFile)
         {
             var install = new ConsoleUpdate();
-            install.InstallApp(address, compressedFile, processInfo);
+            install.InstallApp(compressedFile);
         }
     }
 }

@@ -7,14 +7,14 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Eto.Forms;
+using System.Windows.Forms;
 
 namespace ServoUtility
 {
     public static class TeamCity
     {
-        static string address = GlobalSettings.Default.TeamCity;
-        static string buildType = GlobalSettings.Default.BuildType;
+        static string address = Settings.Default.TeamCity;
+        static string buildType = Settings.Default.BuildType;
 
         public static Uri teamCityDist(string buildId = "316")
         {

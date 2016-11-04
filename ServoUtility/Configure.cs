@@ -18,9 +18,9 @@ namespace ServoUtility
         /// <param name="args"></param>
         public static void changeAll(string client, string ide, string args)
         {
-            GlobalSettings.Default.Client = client;
-            GlobalSettings.Default.IDE = ide;
-            GlobalSettings.Default.Args = args;
+            Settings.Default.Client = client;
+            Settings.Default.IDE = ide;
+            Settings.Default.Args = args;
         }
 
         /// <summary>
@@ -28,9 +28,9 @@ namespace ServoUtility
         /// </summary>
         public static void resetAll()
         {
-            GlobalSettings.Default.Client = "FreeSO.exe";
-            GlobalSettings.Default.IDE = "Volcanic.exe";
-            GlobalSettings.Default.Args = "800x600 w";
+            Settings.Default.Client = "FreeSO.exe";
+            Settings.Default.IDE = "Volcanic.exe";
+            Settings.Default.Args = "800x600 w";
         }
 
         /// <summary>
@@ -42,24 +42,24 @@ namespace ServoUtility
         /// <param name="args"></param>
         public static void changeClientIDE(string client, string ide)
         {
-            GlobalSettings.Default.Client = client;
-            GlobalSettings.Default.IDE = ide;
+            Settings.Default.Client = client;
+            Settings.Default.IDE = ide;
         }
 
 
         public static void changeClient(string client)
         {
-            GlobalSettings.Default.Client = client;
+            Settings.Default.Client = client;
         }
 
         public static void changeIDE(string ide)
         {
-            GlobalSettings.Default.IDE = ide;
+            Settings.Default.IDE = ide;
         }
 
         public static void changeArgs(string args)
         {
-            GlobalSettings.Default.Args = args;
+            Settings.Default.Args = args;
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace ServoUtility
         /// <param name="isgui"></param>
         public static void isGUI(bool isgui)
         {
-            GlobalSettings.Default.isGUI = isgui;
+            Settings.Default.isGUI = isgui;
         }
     }
 }

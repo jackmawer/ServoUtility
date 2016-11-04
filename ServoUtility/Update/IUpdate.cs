@@ -26,11 +26,11 @@
 using System;
 using System.ComponentModel;
 
-namespace ServoUtility
+namespace ServoUtility.Update
 {
     interface IUpdate
     {
-        void InstallApp(Uri address, string compressedFile, string newProcess);
+        void InstallApp(string compressedFile);
         void ExtractExit(object sender, AsyncCompletedEventArgs e);
     }
 }
