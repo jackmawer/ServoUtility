@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WhiteRose.Properties {
+namespace ServoUtility {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -37,7 +37,7 @@ namespace WhiteRose.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("FSO.IDE.exe")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Volcanic.exe")]
         public string IDE {
             get {
                 return ((string)(this["IDE"]));
@@ -68,6 +68,54 @@ namespace WhiteRose.Properties {
             }
             set {
                 this["isGUI"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("servo.freeso.org")]
+        public string TeamCity {
+            get {
+                return ((string)(this["TeamCity"]));
+            }
+            set {
+                this["TeamCity"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("FreeSO_TsoClient")]
+        public string BuildType {
+            get {
+                return ((string)(this["BuildType"]));
+            }
+            set {
+                this["BuildType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("BlueRoseLauncher.exe")]
+        public string Updater {
+            get {
+                return ((string)(this["Updater"]));
+            }
+            set {
+                this["Updater"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ThirdParty.exe")]
+        public string ThirdParty {
+            get {
+                return ((string)(this["ThirdParty"]));
+            }
+            set {
+                this["ThirdParty"] = value;
             }
         }
     }

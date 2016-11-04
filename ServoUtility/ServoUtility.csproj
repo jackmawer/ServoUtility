@@ -5,8 +5,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{F7757A83-3FC4-4F98-B537-A1F08E76471D}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>WhiteRose</RootNamespace>
-    <AssemblyName>WhiteRose</AssemblyName>
+    <RootNamespace>ServoUtility</RootNamespace>
+    <AssemblyName>ServoUtility</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -34,23 +34,34 @@
     <Reference Include="DotNetZip">
       <HintPath>..\packages\DotNetZip.1.10.1\lib\net20\DotNetZip.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppUpdate.cs" />
     <Compile Include="Configure.cs" />
+    <Compile Include="ConsoleUpdate.cs" />
+    <Compile Include="FSO\FSOEnvironment.cs" />
+    <Compile Include="GlobalSettings.cs" />
+    <Compile Include="FSO\IniConfig.cs" />
+    <Compile Include="IUpdate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="FSO.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
+    <Compile Include="FreeSO.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="TeamCity.cs" />
+    <Compile Include="UpdateGC.cs" />
+    <Compile Include="UpdateInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
+    <None Include="Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>

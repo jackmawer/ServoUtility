@@ -9,14 +9,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Eto.Forms;
 
-namespace WhiteRose
+namespace ServoUtility
 {
     public static class TeamCity
     {
+        static string address = GlobalSettings.Default.TeamCity;
+        static string buildType = GlobalSettings.Default.BuildType;
 
-        public static Uri teamCityDist(string address = "servo.freeso.org", string buildType = "ProjectDollhouse_TsoClient", string buildId = "316")
+        public static Uri teamCityDist(string buildId = "316")
         {
-            return new Uri(@"http://" + address + @"/repository/download/" + buildType + @"/" + buildId + @":id/dist-" + FSO.DistNumLegacy() + ".zip");
+            return new Uri(@"http://" + address + @"/repository/download/" + buildType + @"/" + buildId + @":id/dist-" + FreeSO.DistNum() + ".zip");
         }
 
         public static Uri teamCityAddress(string address = "servo.freeso.org", string buildType = "ProjectDollhouse_TsoClient")
@@ -30,7 +32,7 @@ namespace WhiteRose
         /// <param name="address"></param>
         /// <param name="buildType"></param>
         /// <param name="distFile"></param>
-        public static void tcManaged(string address = "servo.freeso.org", string buildType = "ProjectDollhouse_TsoClient", string distFile = "teamcity.zip")
+        public static void tcManaged(string distFile = "teamcity.zip")
         {
             try
             {
@@ -107,7 +109,7 @@ namespace WhiteRose
 
             File.Delete(distFile);
 
-            FSO.wildUnZip();
+            FreeSO.wildUnZip();
 
             /* using (ZipFile build2Unpack = ZipFile.Read("dist-" + distNum() + ".zip"))
             {

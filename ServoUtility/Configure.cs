@@ -1,6 +1,6 @@
 ﻿// This software is under the public domain. See the UNLICENSE file for more details.
 
-namespace WhiteRose
+namespace ServoUtility
 {
     /// <summary>
     /// Runtime configuration to access different clients, IDEs, or simply
@@ -18,16 +18,19 @@ namespace WhiteRose
         /// <param name="args"></param>
         public static void changeAll(string client, string ide, string args)
         {
-            Properties.Settings.Default.Client = client;
-            Properties.Settings.Default.IDE = ide;
-            Properties.Settings.Default.Args = args;
+            GlobalSettings.Default.Client = client;
+            GlobalSettings.Default.IDE = ide;
+            GlobalSettings.Default.Args = args;
         }
 
+        /// <summary>
+        /// Resets Client back to FreeSO, IDE back to Volcanic, and Args to 800x600 w.
+        /// </summary>
         public static void resetAll()
         {
-            Properties.Settings.Default.Client = "FreeSO.exe";
-            Properties.Settings.Default.IDE = "FSO.IDE.exe";
-            Properties.Settings.Default.Args = "800x600 w";
+            GlobalSettings.Default.Client = "FreeSO.exe";
+            GlobalSettings.Default.IDE = "Volcanic.exe";
+            GlobalSettings.Default.Args = "800x600 w";
         }
 
         /// <summary>
@@ -39,24 +42,24 @@ namespace WhiteRose
         /// <param name="args"></param>
         public static void changeClientIDE(string client, string ide)
         {
-            Properties.Settings.Default.Client = client;
-            Properties.Settings.Default.IDE = ide;
+            GlobalSettings.Default.Client = client;
+            GlobalSettings.Default.IDE = ide;
         }
 
 
         public static void changeClient(string client)
         {
-            Properties.Settings.Default.Client = client;
+            GlobalSettings.Default.Client = client;
         }
 
         public static void changeIDE(string ide)
         {
-            Properties.Settings.Default.IDE = ide;
+            GlobalSettings.Default.IDE = ide;
         }
 
         public static void changeArgs(string args)
         {
-            Properties.Settings.Default.Args = args;
+            GlobalSettings.Default.Args = args;
         }
 
         /// <summary>
@@ -67,7 +70,7 @@ namespace WhiteRose
         /// <param name="isgui"></param>
         public static void isGUI(bool isgui)
         {
-            Properties.Settings.Default.isGUI = isgui;
+            GlobalSettings.Default.isGUI = isgui;
         }
     }
 }

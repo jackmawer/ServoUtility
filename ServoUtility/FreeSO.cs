@@ -1,24 +1,47 @@
-﻿// This software is under the public domain. See the UNLICENSE file for more details.
+﻿// This is free and unencumbered software released into the public domain.
+//
+// Anyone is free to copy, modify, publish, use, compile, sell, or
+// distribute this software, either in source code form or as a compiled
+// binary, for any purpose, commercial or non-commercial, and by any
+// means.
+//
+// In jurisdictions that recognize copyright laws, the author or authors
+// of this software dedicate any and all copyright interest in the
+// software to the public domain. We make this dedication for the benefit
+// of the public at large and to the detriment of our heirs and
+// successors. We intend this dedication to be an overt act of
+// relinquishment in perpetuity of all present and future rights to this
+// software under copyright law.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+// OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+//
+// For more information, please refer to <http://unlicense.org/>
 
 using System;
 using System.Diagnostics;
 using System.IO;
 using Eto.Forms;
-using System.Text.RegularExpressions;
 using Ionic.Zip;
 using System.Net;
 using System.Linq;
 using System.Text;
 using System.Reflection;
 
-namespace WhiteRose
+namespace ServoUtility
 {
-    public static class FSO
+    public static class FreeSO
     {
-        [Obsolete]
-        public static string[] fsoParmas { get; set; }
-
-        public static string libVer = "WhiteRose " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        static string libName = "ServoUtility";
+        static string checkIni = " Edit ServoUtility.ini to change the location.";
+        static string fallbackUrl = "www.google.com";
+        static string curDir = Environment.CurrentDirectory;
+        public static string libVer = libName + " " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
         /// <summary>
         /// Returns all files by their extensions within the current directory.
@@ -28,7 +51,7 @@ namespace WhiteRose
         /// <returns></returns>
         public static FileInfo[] FileWildCard(string fileExt)
         {
-            var dir = new DirectoryInfo(Environment.CurrentDirectory);
+            var dir = new DirectoryInfo(curDir);
             var files = dir.GetFiles("*." + fileExt.ToLower()).Where(p => p.Extension == "." + fileExt.ToLower()).ToArray();
             return files;
         }
@@ -54,53 +77,58 @@ namespace WhiteRose
         [Obsolete]
         public static Uri WebPage(string url)
         {
-            try {
+            try
+            {
                 return new Uri(url);
             }
-            catch {
-                return new Uri("https://google.com");
+            catch
+            {
+                return new Uri(fallbackUrl);
             }
         }
 
         /// <summary>
-        /// 
+        /// Returns a custom URL
         /// </summary>
         /// <param name="url"></param>
         /// <returns>new Uri(url);</returns>
-        public static Uri WebURI(string url, string fallback = "https://google.com")
+        public static Uri WebURI(string url)
         {
-            try {
+            try
+            {
                 return new Uri(url);
             }
-            catch {
-                return new Uri(fallback);
+            catch
+            {
+                return new Uri(fallbackUrl);
             }
         }
 
         /// <summary>
         /// Launches the FreeSO IDE executable with the specified
-        /// game arguments defined in the application settings.
+        /// game arguments defined in the global settings.
         /// 
-        /// Defualt settings: FSO.IDE.exe must be located in same
+        /// Defualt settings: FSO.IDE.exe located in same
         /// directory and the game arguments are "800x600 w".
         /// 
         /// To allow changes for these settings, use the Configure class.
         /// </summary>
-        public static void StartFSO()
+        public static void RunClient()
         {
-            var isGUI = Properties.Settings.Default.isGUI;
-            var fso = Properties.Settings.Default.Client;
-            var notFound = fso + " not found";
+            var isGUI = GlobalSettings.Default.isGUI;
+            var fso = GlobalSettings.Default.Client;
+            var notFound = fso + checkIni;
             var fsoProcess = new Process();
 
-			if (File.Exists(fso))
-			{
+            if (File.Exists(fso))
+            {
                 fsoProcess.StartInfo.FileName = fso;
                 fsoProcess.StartInfo.UseShellExecute = true;
-                fsoProcess.StartInfo.Arguments = Properties.Settings.Default.Args;
+                fsoProcess.StartInfo.Arguments = GlobalSettings.Default.Args;
                 fsoProcess.Start();
             }
-			else {
+            else
+            {
 
                 switch (isGUI)
                 {
@@ -118,25 +146,56 @@ namespace WhiteRose
 
         /// <summary>
         /// Launches the FreeSO IDE executable with the specified
-        /// game arguments defined in the application settings.
+        /// game arguments defined in the global settings.
         /// 
-        /// Defualt settings: FSO.IDE.exe must be located in same
+        /// Defualt settings: Volcanic.exe located in same
         /// directory and the game arguments are "800x600 w".
         /// 
         /// To allow changes for these settings, use the Configure class.
         /// </summary>
-        public static void StartIDE()
+        public static void RunIDE()
         {
-            var isGUI = Properties.Settings.Default.isGUI;
-            var ide = Properties.Settings.Default.IDE;
-            var notFound = ide + " not found";
+            var isGUI = GlobalSettings.Default.isGUI;
+            var ide = GlobalSettings.Default.IDE;
+            var notFound = ide + checkIni;
             var fsoProcess = new Process();
 
             if (File.Exists(ide))
             {
                 fsoProcess.StartInfo.FileName = ide;
                 fsoProcess.StartInfo.UseShellExecute = true;
-                fsoProcess.StartInfo.Arguments = Properties.Settings.Default.Args;
+                fsoProcess.StartInfo.Arguments = GlobalSettings.Default.Args;
+                fsoProcess.Start();
+            }
+            else
+            {
+                switch (isGUI)
+                {
+                    case false:
+                        Console.WriteLine(notFound);
+                        break;
+                    case true:
+                    default:
+                        MessageBox.Show(notFound);
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Launches a third party client or application.
+        /// </summary>
+        public static void RunThirdParty(string thirdparty)
+        {
+            var isGUI = GlobalSettings.Default.isGUI;
+            var notFound = thirdparty + checkIni;
+            var fsoProcess = new Process();
+
+            if (File.Exists(thirdparty))
+            {
+                fsoProcess.StartInfo.FileName = thirdparty;
+                fsoProcess.StartInfo.UseShellExecute = true;
+                fsoProcess.StartInfo.Arguments = GlobalSettings.Default.Args;
                 fsoProcess.Start();
             }
             else
@@ -159,31 +218,41 @@ namespace WhiteRose
         /// Thanks to LRB. http://forum.freeso.org/threads/974/
         /// </summary>
         /// <returns>sLine</returns>
-        // TODO: We need a new way to parse HTML files!
-        public static string DistNumLegacy()
+        static string DistNumLegacy()
         {
             string url = "http://servo.freeso.org/externalStatus.html?js=1";
+            string sDistNumError = "???";
             WebRequest wrGETURL;
             wrGETURL = WebRequest.Create(url);
             Stream objStream;
             objStream = wrGETURL.GetResponse().GetResponseStream();
-            var objReader = new StreamReader(objStream);
+            StreamReader objReader = new StreamReader(objStream);
             string sLine = "";
             string fll;
             fll = objReader.ReadLine();
-            sLine = fll.Remove(0, 855);
-            sLine = sLine.Remove(sLine.IndexOf("</a>", StringComparison.Ordinal));
-            return sLine;
+            sLine = fll.Remove(0, 835);
+            sLine = sLine.Remove(sLine.IndexOf("</a>"));
+            int value;
+            //sLine = "FAKE ERROR";
+            if (int.TryParse(sLine, out value)) //If we've an integer...
+            {
+                return sLine; //Return it, ignoring value since sLine's already a string.
+            }
+            else //Otherwise,
+            {
+                sLine = sDistNumError; //Set sLine to the error message defined above,
+                return sLine; //and send that.
+            }
         }
 
         /// <summary>
         /// New disNum method.
         /// </summary>
         /// <returns></returns>
-        // TODO: Put new HTML parser logic here. Make public afterwords.
-        static string DistNum()
+        // TODO: Put new HTML parser logic here. Make public afterwords. Currently returns DistNum.
+        public static string DistNum()
         {
-            return null;
+            return DistNumLegacy();
         }
 
         /// <summary>
@@ -195,16 +264,19 @@ namespace WhiteRose
         {
             string line;
 
-            try {
-                string buildFile = Environment.CurrentDirectory + @"/" + file;
+            try
+            {
+                string buildFile = curDir + @"/" + file;
                 var fileRead = new StreamReader(buildFile);
-                while ((line = fileRead.ReadLine()) != null) {
+                while ((line = fileRead.ReadLine()) != null)
+                {
                     return "#" + line;
                 }
 
                 fileRead.Close();
             }
-            catch {
+            catch
+            {
                 return "NONE";
             }
 
@@ -217,13 +289,15 @@ namespace WhiteRose
         /// <param name="file"></param>
         public static void WriteBuild(string file)
         {
-            string buildFile = Environment.CurrentDirectory + @"/" + file;
-            string localDist = DistNumLegacy();
+            string buildFile = curDir + @"/" + file;
+            string localDist = DistNum();
 
-            try {
+            try
+            {
                 File.WriteAllText(buildFile, localDist);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 MessageBox.Show(ex.Message);
             }
         }
@@ -237,12 +311,15 @@ namespace WhiteRose
         {
             var files = FileWildCard("zip");
 
-            foreach (FileInfo file in files) {
-                try {
+            foreach (FileInfo file in files)
+            {
+                try
+                {
                     file.Attributes = FileAttributes.Normal;
                     File.Delete(file.FullName);
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     Console.WriteLine(ex.Message);
                 }
             }
@@ -256,9 +333,12 @@ namespace WhiteRose
             var dir = new DirectoryInfo(Environment.CurrentDirectory);
             var files = dir.GetFiles("*.zip").Where(p => p.Extension == ".zip").ToArray();
 
-            foreach (FileInfo file in files) {
-                using (ZipFile zip2 = ZipFile.Read(file.FullName)) {
-                    foreach (ZipEntry ex in zip2) {
+            foreach (FileInfo file in files)
+            {
+                using (ZipFile zip2 = ZipFile.Read(file.FullName))
+                {
+                    foreach (ZipEntry ex in zip2)
+                    {
                         ex.Extract(Environment.CurrentDirectory, ExtractExistingFileAction.OverwriteSilently);
                     }
                 }
@@ -267,14 +347,16 @@ namespace WhiteRose
 
         public static void distUnZip(string dist)
         {
-            using (ZipFile zip2 = ZipFile.Read(dist)) {
-                foreach (ZipEntry ex in zip2) {
+            using (ZipFile zip2 = ZipFile.Read(dist))
+            {
+                foreach (ZipEntry ex in zip2)
+                {
                     ex.Extract(Environment.CurrentDirectory, ExtractExistingFileAction.OverwriteSilently);
                 }
             }
         }
 
-		#endregion
+        #endregion
 
         /// <summary>
         /// 
@@ -287,7 +369,8 @@ namespace WhiteRose
             // Concatenate all the elements into a StringBuilder.
             //
             var builder = new StringBuilder();
-            foreach (string value in array) {
+            foreach (string value in array)
+            {
                 builder.Append(value);
                 builder.Append(' ');
             }
